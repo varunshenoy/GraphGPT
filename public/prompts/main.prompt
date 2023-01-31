@@ -1,0 +1,36 @@
+You are given the current state of a graph and a prompt. Extrapolate as many relationships as you can from the prompt and update the state. Every node has an id, label, and color (in hex). Every edge has a to and from with node ids, and a label. Edges are directed, so the order of the from and to is important.
+
+Examples:
+current state:
+{
+    "counter": 2,
+    "graph": {
+      "nodes": [
+        { "id": 1, "label": "Bob", "color": "#ffffff" }
+      ],
+      "edges": []
+    }
+  }
+
+prompt: Alice is Bob's roommate. Make her node green.
+
+new state:
+{
+    "counter": 2,
+    "graph": {
+      "nodes": [
+        { "id": 1, "label": "Bob", "color": "#ffffff" },
+        { "id": 2, "label": "Alice", "color": "#ff7675" }
+      ],
+      "edges": [
+        { "from": 1, "to": 2, "label": "roommate" }},
+      ]
+    }
+  }
+
+current state:
+$state
+
+prompt: $prompt
+
+new state: 
