@@ -3,7 +3,7 @@ You are given the current state of a graph and a prompt. Extrapolate as many rel
 Examples:
 current state:
 {
-    "counter": 2,
+    "counter": 1,
     "graph": {
       "nodes": [
         { "id": 1, "label": "Bob", "color": "#ffffff" }
