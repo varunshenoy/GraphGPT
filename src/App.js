@@ -60,10 +60,22 @@ function App() {
           body: JSON.stringify(params)
         };
         fetch('https://api.openai.com/v1/completions', requestOptions)
-          .then(response => response.json())
-          .then(data => {
-            console.log(data);
-            const text = data.choices[0].text;
+          .then(response => {
+            if (!response.ok) {
+              switch (response.status) {
+                case 401: // 401: Unauthorized: API key is wrong
+                  throw new Error('Please double-check your API key.');
+                case 429: // 429: Too Many Requests: Need to pay
+                  throw new Error('You exceeded your current quota, please check your plan and billing details.');
+                default:
+                  throw new Error('Something went wrong with the request, please check the Network log');
+              }
+            }
+            return response.json();
+          })
+          .then((response) => {
+            const { choices } = response;
+            const text = choices[0].text;
             console.log(text);
             const new_graph = JSON.parse(text);
             console.log(new_graph);
@@ -73,9 +85,9 @@ function App() {
             document.body.style.cursor = 'default';
             document.getElementsByClassName("generateButton")[0].disabled = false;
             document.getElementsByClassName("searchBar")[0].value = "";
-          }).catch(error => {
+          }).catch((error) => {
             console.log(error);
-            alert("Error: " + error + ". Please double-check your API key.");
+            alert(error);
             document.body.style.cursor = 'default';
             document.getElementsByClassName("generateButton")[0].disabled = false;
           });
