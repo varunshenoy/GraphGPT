@@ -75,7 +75,7 @@ function App() {
             document.getElementsByClassName("searchBar")[0].value = "";
           }).catch(error => {
             console.log(error);
-            alert("Error: " + error + ". Please check your API key.");
+            alert("Error: " + error + ". Please double-check your API key.");
             document.body.style.cursor = 'default';
             document.getElementsByClassName("generateButton")[0].disabled = false;
           });
