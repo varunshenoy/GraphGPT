@@ -2,7 +2,11 @@ import './App.css';
 import Graph from "react-graph-vis";
 import React, { useState } from "react";
 
-const OPENAI_API_KEY = "YOUR OPENAI API KEY";
+if (!localStorage.getItem("OPENAI_API_KEY")) {
+  localStorage.setItem("OPENAI_API_KEY", prompt("Enter your OpenAI API key"));
+}
+
+const OPENAI_API_KEY = localStorage.getItem("OPENAI_API_KEY");
 
 const DEFAULT_PARAMS = {
   "model": "text-davinci-003",
