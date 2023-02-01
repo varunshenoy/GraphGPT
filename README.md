@@ -12,5 +12,5 @@ The current few-shot prompt guides GPT-3 in accurately understanding the JSON fo
 ## Setup
 
 1. Run `npm install` to download required dependencies (currently just [react-graph-vis](https://github.com/crubier/react-graph-vis)).
-2. Enter your OPENAI_API_KEY in `src/App.js`.
+2. CREATE `src/OPENAI_API_KEY.js` using template in `src/OPENAI_API_KEY.template.js`.
 3. Run `npm run start`. GraphGPT should open up in a new browser tab.

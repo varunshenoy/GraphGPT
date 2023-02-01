@@ -2,7 +2,7 @@ import './App.css';
 import Graph from "react-graph-vis";
 import React, { useState } from "react";
 
-const OPENAI_API_KEY = "YOUR OPENAI API KEY";
+import OPENAI_API_KEY from "./OPENAI_API_KEY.js";
 
 const DEFAULT_PARAMS = {
   "model": "text-davinci-003",
