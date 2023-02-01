@@ -128,3 +128,17 @@
 .clearButton:hover {
   background-color: rgba(239, 239, 239, 0.8);
 }
+
+.errorText {
+  font-family: 'Noticia Text';
+  font-weight: 400;
+  font-size: 16px;
+  text-align: center;
+  border: 1px solid rgb(0, 0, 0);
+  border-radius: 6px;
+  margin-bottom: 20px;
+  margin-top: 20px;
+  padding: 20px;
+  color: rgb(255, 255, 255);
+  background-color: rgb(112, 4, 4);
+}
