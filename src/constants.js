@@ -1,7 +1,5 @@
 // Either export an env variable OPENAI_API_KEY or add it inline here
-export const OPENAI_API_KEY =
-  process.env.REACT_APP_OPENAI_API_KEY ||
-  "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";
+export const OPENAI_API_KEY = process.env.REACT_APP_OPENAI_API_KEY || "API KEY";
 
 export const DEFAULT_PARAMS = {
   model: "text-davinci-003",
