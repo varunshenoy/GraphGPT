@@ -31,6 +31,7 @@ function App() {
         edges: []
       }
     })
+  const [errorState, setErrorState] = useState(null)
   const { graph } = state;
 
   const clearState = () => {
@@ -65,18 +66,32 @@ function App() {
           .then(response => response.json())
           .then(data => {
             console.log(data);
+
+            if (data.error) {
+              throw new Error(data.error.message);
+            }
+
             const text = data.choices[0].text;
             console.log(text);
-            const new_graph = JSON.parse(text);
+
+            let new_graph = null;
+            try {
+              new_graph = JSON.parse(text);
+            } catch (error) {
+              throw new Error(text.split('\n').pop());
+            }
+
             console.log(new_graph);
             setState(new_graph, () => {
               console.log(state);
             });
+            setErrorState(null);
             document.body.style.cursor = 'default';
             document.getElementsByClassName("generateButton")[0].disabled = false;
             document.getElementsByClassName("searchBar")[0].value = "";
           }).catch(error => {
-            console.log(error);
+            console.log(error.message);
+            setErrorState(error.message);
             document.body.style.cursor = 'default';
             document.getElementsByClassName("generateButton")[0].disabled = false;
           });
@@ -86,9 +101,9 @@ function App() {
 
   const createGraph = () => {
     // document.body.style.cursor = 'wait';
-
-    document.getElementsByClassName("generateButton")[0].disabled = true;
     const prompt = document.getElementsByClassName("searchBar")[0].value;
+    if (prompt.length === 0) return;
+    document.getElementsByClassName("generateButton")[0].disabled = true;
 
     queryPrompt(prompt);
   }
@@ -103,6 +118,7 @@ function App() {
           <input className="searchBar" placeholder="Describe your graph..."></input>
           <button className="generateButton" onClick={createGraph}>Generate</button>
           <button className="clearButton" onClick={clearState}>Clear</button>
+          { errorState && <p className='errorText'>{errorState}</p> }
         </div>
       </center>
       <div className='graphContainer'>
