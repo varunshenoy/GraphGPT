@@ -17,6 +17,15 @@
   margin: 0 auto;
 }
 
+.opensourceText {
+  font-family: 'Noticia Text';
+  font-weight: 400;
+  font-size: 14px;
+  text-align: center;
+  width: 60%;
+  margin: 10px auto;
+}
+
 .container {
   padding-right: 15px;
   padding-left: 15px;
@@ -83,7 +92,21 @@
   margin-left: auto;
   margin-right: auto;
   margin-bottom: 20px;
+}
 
+.apiKeyTextField {
+  border: 1px solid rgb(0, 0, 0);
+  border-radius: 5px;
+  box-shadow: 0 0 5px rgb(0 0 0 / 10%);
+  display: block;
+  font-size: 16px;
+  height: 50px;
+  outline: none;
+  padding: 0 10px;
+  width: 90%;
+  margin-left: auto;
+  margin-right: auto;
+  margin-bottom: 20px;
 }
 
 .generateButton {
@@ -106,7 +129,7 @@
 
 .generateButton:disabled {
   background-color: rgb(0, 0, 0, 0.5);
-  /* cursor: wait; */
+  cursor: wait;
 }
 
 .clearButton {
