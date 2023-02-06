@@ -2,7 +2,7 @@ Given a prompt, extrapolate as many relationships as possible from it and provid
 
 If an update is a relationship, provide [ENTITY 1, RELATIONSHIP, ENTITY 2]. The relationship is directed, so the order matters.
 
-If an update is related to a color, provide [ENTITY, COLOR].
+If an update is related to a color, provide [ENTITY, COLOR]. Color is in hex format.
 
 If an update is related to deleting an entity, provide ["DELETE", ENTITY].
 
