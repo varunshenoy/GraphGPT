@@ -102,8 +102,6 @@ function App() {
         // check if the node already exists
         var node = current_graph.nodes.find(node => node.id === index);
 
-        console.log("HIII");
-
         if (node === undefined) {
           return;
         }
