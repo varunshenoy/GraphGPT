@@ -11,6 +11,10 @@ Successive queries can update the existing state of the graph or create an entir
 
 The current few-shot prompt guides GPT-3 in accurately understanding the JSON formatting GraphGPT requires for proper rendering. You can see the entire prompt in `public/prompts/main.prompt`. A major issue at the moment is latency. Due to the nature of OpenAI API calls, it takes up to 20 seconds to receive a response.
 
+## Prompts
+
+Prompts are located in the `public/prompts` folder. Read [this](https://twitter.com/varunshenoy_/status/1625224544561819648?s=20) Twitter thread I put together to learn more about how these prompts were designed.
+
 ## Setup
 
 1. Run `npm install` to download required dependencies (currently just [react-graph-vis](https://github.com/crubier/react-graph-vis)).
