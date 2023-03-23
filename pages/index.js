@@ -1,18 +1,11 @@
 import React, { useState } from "react";
 import dynamic from "next/dynamic";
+import { STATELESS_PROMPT, STATEFUL_PROMPT } from "../constants/prompts";
+import { PLANT_GRAPH } from "../constants/graphs";
 
 const Graph = dynamic(() => import("react-graph-vis"), {
   ssr: false,
 });
-
-const DEFAULT_PARAMS = {
-  model: "gpt-3.5-turbo",
-  temperature: 0.3,
-  max_tokens: 800,
-  top_p: 1,
-  frequency_penalty: 0,
-  presence_penalty: 0,
-};
 
 const SELECTED_PROMPT = "STATELESS";
 
@@ -26,10 +19,7 @@ const options = {
 };
 
 function App() {
-  const [graphState, setGraphState] = useState({
-    nodes: [],
-    edges: [],
-  });
+  const [graphState, setGraphState] = useState(PLANT_GRAPH);
 
   const clearState = () => {
     setGraphState({
@@ -132,145 +122,100 @@ function App() {
     setGraphState(current_graph);
   };
 
-  const queryStatelessPrompt = (prompt, apiKey) => {
-    fetch("prompts/stateless.prompt")
-      .then((response) => response.text())
-      .then((text) => text.replace("$prompt", prompt))
-      .then((prompt) => {
-        console.log(prompt);
+  const queryStatelessPrompt = (promptValue) => {
+    const prompt = STATELESS_PROMPT.replace("$prompt", promptValue);
 
-        const params = {
-          ...DEFAULT_PARAMS,
-          messages: [
-            {
-              role: "user",
-              content: prompt,
-            },
-          ],
-        };
+    fetch("api/model/query", {
+      method: "POST",
+      body: JSON.stringify({ prompt }),
+    })
+      .then((response) => {
+        if (!response.ok) {
+          switch (response.status) {
+            case 401: // 401: Unauthorized: API key is wrong
+              throw new Error("Please double-check your API key.");
+            case 429: // 429: Too Many Requests: Need to pay
+              throw new Error(
+                "You exceeded your current quota, please check your plan and billing details."
+              );
+            default:
+              throw new Error(
+                "Something went wrong with the request, please check the Network log"
+              );
+          }
+        }
+        return response.json();
+      })
+      .then((response) => {
+        console.log(response);
 
-        // const params = { ...DEFAULT_PARAMS, prompt: prompt, stop: "\n" };
+        const { choices } = response;
+        const text = choices[0].text;
+        console.log(text);
 
-        const requestOptions = {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: "Bearer " + String(apiKey),
-          },
-          body: JSON.stringify(params),
-        };
-        fetch("https://api.openai.com/v1/chat/completions", requestOptions)
-          .then((response) => {
-            if (!response.ok) {
-              switch (response.status) {
-                case 401: // 401: Unauthorized: API key is wrong
-                  throw new Error("Please double-check your API key.");
-                case 429: // 429: Too Many Requests: Need to pay
-                  throw new Error(
-                    "You exceeded your current quota, please check your plan and billing details."
-                  );
-                default:
-                  throw new Error(
-                    "Something went wrong with the request, please check the Network log"
-                  );
-              }
-            }
-            return response.json();
-          })
-          .then((response) => {
-            const { choices } = response;
-            const text = choices[0].text;
-            console.log(text);
+        const updates = JSON.parse(text);
+        console.log(updates);
 
-            const updates = JSON.parse(text);
-            console.log(updates);
+        updateGraph(updates);
 
-            updateGraph(updates);
-
-            document.getElementsByClassName("searchBar")[0].value = "";
-            document.body.style.cursor = "default";
-            document.getElementsByClassName(
-              "generateButton"
-            )[0].disabled = false;
-          })
-          .catch((error) => {
-            console.log(error);
-            alert(error);
-          });
+        document.getElementsByClassName("searchBar")[0].value = "";
+        document.body.style.cursor = "default";
+        document.getElementsByClassName("generateButton")[0].disabled = false;
+      })
+      .catch((error) => {
+        console.log(error);
+        alert(error);
       });
   };
 
-  const queryStatefulPrompt = (prompt, apiKey) => {
-    fetch("prompts/stateful.prompt")
-      .then((response) => response.text())
-      .then((text) => text.replace("$prompt", prompt))
-      .then((text) => text.replace("$state", JSON.stringify(graphState)))
-      .then((prompt) => {
-        console.log(prompt);
+  const queryStatefulPrompt = (promptValue) => {
+    const prompt = STATEFUL_PROMPT.replace("$prompt", promptValue);
 
-        const params = {
-          ...DEFAULT_PARAMS,
-          messages: [
-            {
-              role: "user",
-              content: prompt,
-            },
-          ],
-        };
+    fetch("api/model/query", {
+      method: "POST",
+      body: JSON.stringify({ prompt }),
+    })
+      .then((response) => {
+        if (!response.ok) {
+          switch (response.status) {
+            case 401: // 401: Unauthorized: API key is wrong
+              throw new Error("Please double-check your API key.");
+            case 429: // 429: Too Many Requests: Need to pay
+              throw new Error(
+                "You exceeded your current quota, please check your plan and billing details."
+              );
+            default:
+              throw new Error(
+                "Something went wrong with the request, please check the Network log"
+              );
+          }
+        }
+        return response.json();
+      })
+      .then((response) => {
+        const { choices } = response;
+        const text = choices[0].text;
+        console.log(text);
 
-        const requestOptions = {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: "Bearer " + String(apiKey),
-          },
-          body: JSON.stringify(params),
-        };
-        fetch("https://api.openai.com/v1/chat/completions", requestOptions)
-          .then((response) => {
-            if (!response.ok) {
-              switch (response.status) {
-                case 401: // 401: Unauthorized: API key is wrong
-                  throw new Error("Please double-check your API key.");
-                case 429: // 429: Too Many Requests: Need to pay
-                  throw new Error(
-                    "You exceeded your current quota, please check your plan and billing details."
-                  );
-                default:
-                  throw new Error(
-                    "Something went wrong with the request, please check the Network log"
-                  );
-              }
-            }
-            return response.json();
-          })
-          .then((response) => {
-            const { choices } = response;
-            const text = choices[0].text;
-            console.log(text);
+        const new_graph = JSON.parse(text);
 
-            const new_graph = JSON.parse(text);
+        setGraphState(new_graph);
 
-            setGraphState(new_graph);
-
-            document.getElementsByClassName("searchBar")[0].value = "";
-            document.body.style.cursor = "default";
-            document.getElementsByClassName(
-              "generateButton"
-            )[0].disabled = false;
-          })
-          .catch((error) => {
-            console.log(error);
-            alert(error);
-          });
+        document.getElementsByClassName("searchBar")[0].value = "";
+        document.body.style.cursor = "default";
+        document.getElementsByClassName("generateButton")[0].disabled = false;
+      })
+      .catch((error) => {
+        console.log(error);
+        alert(error);
       });
   };
 
-  const queryPrompt = (prompt, apiKey) => {
+  const queryPrompt = (prompt) => {
     if (SELECTED_PROMPT === "STATELESS") {
-      queryStatelessPrompt(prompt, apiKey);
+      queryStatelessPrompt(prompt);
     } else if (SELECTED_PROMPT === "STATEFUL") {
-      queryStatefulPrompt(prompt, apiKey);
+      queryStatefulPrompt(prompt);
     } else {
       alert("Please select a prompt");
       document.body.style.cursor = "default";
@@ -283,17 +228,16 @@ function App() {
 
     document.getElementsByClassName("generateButton")[0].disabled = true;
     const prompt = document.getElementsByClassName("searchBar")[0].value;
-    const apiKey = document.getElementsByClassName("apiKeyTextField")[0].value;
 
-    queryPrompt(prompt, apiKey);
+    queryPrompt(prompt);
   };
 
   console.log(process.env.MODEL_PRESENCE_PENALTY); // 0.1
 
   return (
     <div className="container">
-      <h1 className="headerText">GraphGPT 🔎</h1>
-      <p className="subheaderText">
+      {/* <h1 className="headerText">GraphGPT 🔎</h1> */}
+      {/* <p className="subheaderText">
         Build complex, directed graphs to add structure to your ideas using
         natural language. Understand the relationships between people, systems,
         and maybe solve a mystery.
@@ -303,17 +247,12 @@ function App() {
           GraphGPT is open-source
         </a>
         &nbsp;🎉
-      </p>
-      <center>
+      </p> */}
+      {/* <center>
         <div className="inputContainer">
           <input
             className="searchBar"
             placeholder="Describe your graph..."
-          ></input>
-          <input
-            className="apiKeyTextField"
-            type="password"
-            placeholder="Enter your OpenAI API key..."
           ></input>
           <button className="generateButton" onClick={createGraph}>
             Generate
@@ -322,12 +261,12 @@ function App() {
             Clear
           </button>
         </div>
-      </center>
+      </center> */}
       <div className="graphContainer">
         <Graph
           graph={graphState}
           options={options}
-          style={{ height: "640px" }}
+          style={{ height: "80vh" }}
         />
       </div>
       <p className="footer">
